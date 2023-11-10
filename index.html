@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="pic.jpg" type="image/x-icon">
+    <!-- <link rel="icon" href="pic.jpg" type="image/x-icon"> -->
     <title>generate_typing</title>
     <style>
         body{
@@ -12,6 +12,10 @@
             text-align: center;
             background-color: aqua;
             
+        }
+        .instructions{
+            color: rgb(168, 168, 62);
+            text-transform: capitalize;
         }
         .correct{ 
             color: green;
@@ -24,8 +28,9 @@
     </style>
 </head>
 <body>
-    <h1 id = 'wpm'>0</h1>
-    <h1 id = 'box'></h1>
+    <h1 class = 'instructions' id = 'instructions'>type the sentence below</h1>
+    <h1 id = 'wpm'>wpm: 0</h1>
+    <h1 id = 'sentence'></h1>
     <h1 id = 'typed'></h1>
     
     <script>
@@ -44,21 +49,34 @@
             return span_list
             }
 
-        function func(event){
+        function detect_typing(event){
+            console.log('typing detected')
+            if (!start_seconds){
+                const start_time = new Date();
+                start_seconds = (start_time.getHours()*60 + start_time.getMinutes())*60 + start_time.getSeconds();
+            }
+
+            if (!intervalStarted) {
+                // Start the interval only once when typing begins
+                setInterval(update_wpm, 1); // Update every 1 second (1000 milliseconds)
+                intervalStarted = true;
+            }
+            if (instructions.innerText) {
+                instructions.innerText = '';
+            }
             new_cur_time = get_cur_time();
             if (event.key == 'Backspace'){
                 stuff_typed.pop();
                 if (letters_typed > 0){ 
                 letters_typed --;
+                if (span_list[letters_typed].classList.contains('correct')){
+                    number_of_corrects--;
+                }
                 span_list[letters_typed].classList.remove('correct');
                 span_list[letters_typed].classList.remove('incorrect');
                 letter_times.pop();
                 
-                }
-                if (span_list[letters_typed+1].classList.contains('correct')){
-                    number_of_corrects--;
-                }
-
+                 }
                 }
             
             else{
@@ -81,9 +99,9 @@
             }
             box.innerText = '';
             span_list.forEach(span => {
-            box.appendChild(span)
-            console.log(letter_times);
-        })}
+                box.appendChild(span)
+                console.log(letter_times);
+            })}
         function make_counter(sentence){
             const counter = {};
             let letters = sentence.split('');
@@ -138,28 +156,28 @@
             var time_since_started_in_seconds =  new_seconds - start_seconds;
             var time_since_started_in_minutes = time_since_started_in_seconds/60;
             var words_correct = number_of_corrects/5;
-            var wpm = words_correct/time_since_started_in_minutes;
+            var wpm = ("wpm: " + String(Math.round(words_correct/time_since_started_in_minutes)));
             console.log(time_since_started_in_seconds, time_since_started_in_minutes, words_correct, wpm);
-            wpm_on_html.innerText = Math.round(wpm);
+            
+            wpm_on_html_page.innerText = wpm;
         }
-
-        const start_time = new Date();
-        const start_seconds = (start_time.getHours()*60 + start_time.getMinutes())*60 + start_time.getSeconds();
+        let intervalStarted = false;
+        const instructions = document.getElementById('instructions');
+        let start_seconds = '';
         console.log(start_seconds);
-        const wpm_on_html = document.getElementById('wpm');
+        const wpm_on_html_page = document.getElementById('wpm');
         let number_of_corrects = 0;
         const letter_times = [];
         const typed = document.getElementById('typed');
         const stuff_typed = [];
-        const box = document.getElementById('box');
-        const sentence = 'the brown fox jumped over the red fence';
+        const box = document.getElementById('sentence');
+        const sentence = 'the brown fox jumped over the red fence.';
+        box.innerText = sentence;
         let span_list = set_list_of_spans(sentence)
         let letters_typed = 0;
         cur_time = get_cur_time();
 
-
-        window.addEventListener('keydown', func);
-        setInterval(update_wpm, 1);
+        window.addEventListener('keydown', detect_typing);
     </script>
 </body>
 
