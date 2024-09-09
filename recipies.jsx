@@ -215,7 +215,7 @@ function Recipe(recipeName, props) {
     <div class="recipe ${canMake(props.ingredients) ? "can-make" : "cannot-make"}">
     
         <img src=${`images/${recipeName}.jpeg`} alt="" />
-        
+
         <section class="auther">
             <img src="${auther.avatar}" alt="" />
             <h4>made by ${auther.name}</h4>
@@ -224,24 +224,34 @@ function Recipe(recipeName, props) {
         <div class="non-image">
             <h2>${props.name}</h2>
             <p>${props.description}</p>
-            <ul>
-                /${Array.from(props.ingredients.entries()).map((key, value) => stringClean/*html*/`<li>${key}: ${value}</li>`).join(" ")}
-            </ul>
-            ${html`<button ${canMake(props.ingredients) ? "": "disabled"} onclick=${(el, event) => {make(recipeName, props.ingredients); el.component().RenderMap.rerender()}}>make</button>`}
-            ${isMaking(recipeName) ? html`<button onclick=${(el, event) => {unmake(recipeName, props.ingredients); el.component().RenderMap.rerender()}}>unmake</button>`: ""}
+
+            <details>
+                <summary>ingredients</summary>
+                <ul>
+                    /${Array.from(props.ingredients.entries()).map((key, value) => stringClean/*html*/`<li>${key}: ${value}</li>`).join(" ")}
+                </ul>
+            </details>
+            <div class="buttons">
+                ${html`<button ${canMake(props.ingredients) ? "": "disabled"} onclick=${(el, event) => {make(recipeName, props.ingredients); el.component().RenderMap.rerender()}}>make</button>`}
+                ${isMaking(recipeName) ? html`<button onclick=${(el, event) => {unmake(recipeName, props.ingredients); el.component().RenderMap.rerender()}}>unmake</button>`: ""}
+            </div>
         </div>
     </div>
     `
 }
 
 
-function ingredientsMaking() {
+function IngredientsMaking() {
     return html`
-    <div class="ingredients-making" rerender-with='ingredientsMaking'>
+    <div class="ingredients-making" rerender-with='IngredientsMaking'>
         <h1>these ingredients are being made</h1>
         /${Array.from(recipesMaking.entries()).map((key, value) => {console.log(key, value); return stringClean/*html*/`<span>${key}: ${value}</span>`}).join(" ")}
     </div>
     `
+}
+
+function toggleNightMode() {
+    document.body.classList.toggle("night-mode")
 }
 
 
@@ -249,12 +259,14 @@ function App(){
 
     return html`
     <main class="App" rerender-with='App' id="root">
-        <header>
+        <header onclick="toggleNightMode()">
+            
         </header>
-        /${ingredientsMaking()}
         /${CreateRenderGroup("recipeList", recipes, Recipe)}
     </main>
     `
 }
 
+
+ingridiants_making.morphe(IngredientsMaking)
 root.morphe(App)
