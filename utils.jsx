@@ -1,4 +1,10 @@
-const recipesMaking = new Map()
+const recipesMaking = new Map([
+    ['chicken_soup', 4],
+    ['chicken_salad', 3],
+    ['sushi', 2],
+])
+
+console.log(Array.from(recipesMaking));
 
 
 function toggleNightMode() {
