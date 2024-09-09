@@ -1,0 +1,123 @@
+
+.recipe{
+    position: relative;
+    border: 2px solid black;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    background-color: rgb(235, 233, 230);
+
+    
+    .non-image{
+        padding: 4%;
+        padding-top: 0;
+    }
+    img{
+        border-top-right-radius: 10px;
+        border-top-left-radius: 10px;
+        aspect-ratio: 16 / 9;
+        width: 100%;
+    }
+
+    span{
+        display: block;
+    }
+}
+
+.night-mode .recipe{
+    background-color: black;
+    color: rgb(188, 146, 69);
+    border-color: rgb(184, 143, 66);
+
+}
+
+
+@property --angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+@keyframes rotate-angle {
+    0% {
+        --angle: 0deg;
+    }
+    50% {
+        --angle: 360deg;
+    }
+}
+
+
+.night-mode .recipe:hover{
+    border-color: transparent;
+
+&::before{
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    transform: scale(1.02);
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    background: linear-gradient(var(--angle), #03a9f4, #f441a5, #ffeb3b, #03a9f4) ;
+    animation: rotate-angle 20s infinite;
+    filter: blur(2px);
+}
+
+}
+
+.recipe section.auther{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+.comments{
+    border-top: 1px solid black;
+    padding: 10px;
+
+    .comment{
+        margin-bottom: 10px;
+
+        .comment-header{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+
+            .comment-author{
+                font-weight: bold;
+            }
+
+            .comment-date{
+                color: gray;
+            }
+        }
+
+        .comment-body{
+            white-space: pre-wrap;
+        }
+    }
+}
+
+
+
+
+
+
+section.auther {
+    height: fit-content;
+    padding-left: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    img{
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+    }
+
+}
