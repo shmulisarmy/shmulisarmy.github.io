@@ -2,8 +2,14 @@ HTMLElement.prototype.rerender = function () {
     if (this.classList.contains("container")) {
         this.RenderMap.rerender()
     } else if (this.classList.contains("component")) {       
-        const newElement = this.rerenderer(this.props)
+        const newElement = this.rerenderer(this.key, this.props)
         this.parentElement.replaceChild(newElement, this)
+        newElement.classList.add("component")
+        newElement.key = this.key
+        newElement.RenderMap = this.RenderMap
+        newElement.rerenderer = this.rerenderer
+        newElement.props = this.props
+        newElement.loadAllContainers()
     } else {
         const rerendererName = this.getAttribute("rerender-with")
         const rerenderer = eval(rerendererName)
@@ -20,7 +26,12 @@ HTMLElement.prototype.set = function (key, value) {
     component.parentElement.replaceChild(newElement, component)
 }
 
+let temp1;
+
 HTMLElement.prototype.component = function () {
+    console.log(this)
+    temp1 = this
+
     if (this.classList.contains("component")) {
         return this
     }
